@@ -1,8 +1,10 @@
 #!/usr/bin/env node
 /**
  * Claude Code PostToolUse 훅 라우터.
- * stdin으로 받은 JSON을 파싱해서 파일 경로가 output/<폴더>/post.md 일 때만
- * quality-check + duplicate-check을 자동 실행합니다.
+ * stdin으로 받은 JSON을 파싱해서
+ *   - output/<폴더>/post.md → quality-check + duplicate-check
+ *   - output/instagram/<폴더>/caption.md 또는 slides.json → insta-check
+ * 을 자동 실행합니다.
  *
  * 훅이 실패해도 Claude의 작업을 막지 않도록 항상 exit 0.
  */
@@ -50,8 +52,16 @@ async function main() {
   const filePath = extractPath(payload);
   if (!filePath) process.exit(0);
 
-  // output/<anything>/post.md 만 대상
   const normalized = filePath.replace(/\\/g, '/');
+
+  // output/instagram/<폴더>/caption.md | slides.json
+  if (/\/output\/instagram\/[^/]+\/(caption\.md|slides\.json)$/.test(normalized)) {
+    console.log(`\n🤖 [자동 훅] 인스타 게시물 감지 → insta-check 실행`);
+    run('node', ['scripts/insta-check.js', '--folder', dirname(filePath)]);
+    process.exit(0);
+  }
+
+  // output/<anything>/post.md 만 대상
   if (!/\/output\/[^/]+\/post\.md$/.test(normalized)) process.exit(0);
 
   const keyword = extractKeyword(filePath);

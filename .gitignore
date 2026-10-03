@@ -13,6 +13,10 @@ knowledge/tone-samples/*.md
 knowledge/patterns/*.txt
 knowledge/patterns/*.md
 !knowledge/patterns/README.md
+knowledge/instagram/profile.md
+knowledge/instagram/portfolio.md
+knowledge/instagram/assets/*
+!knowledge/instagram/assets/.gitkeep
 
 # 생성된 결과물
 output/

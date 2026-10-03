@@ -43,7 +43,12 @@ claude-code-blog-builder/
 │   ├── banned-words.template.json
 │   ├── banned-words.json
 │   ├── tone-samples/                    # /setup-tone이 채움
-│   └── patterns/
+│   ├── patterns/
+│   └── instagram/
+│       ├── playbook.md                  # 수주형 인스타 전략 (공개)
+│       ├── profile.template.md          # → profile.md (/insta-setup, gitignored)
+│       ├── portfolio.template.md        # → portfolio.md (/insta-setup, gitignored)
+│       └── assets/                      # 실제 작업물 이미지 (gitignored)
 │
 ├── scripts/
 │   ├── research.js              # 네이버 API 키워드 리서치
@@ -53,6 +58,10 @@ claude-code-blog-builder/
 │   ├── hook-post-write.js       # PostToolUse 훅 라우터
 │   ├── preview.js               # 발행 어시스턴트 (HTML)
 │   ├── setup-tone-fetch.js      # 블로그 URL 본문 수집
+│   ├── insta-check.js           # 인스타 게시물 결정론 채점
+│   ├── insta-images.js          # 캐러셀 4:5 슬라이드 생성 / 실물 복사
+│   ├── insta-preview.js         # 인스타 업로드 어시스턴트 (HTML)
+│   ├── insta-trends.js          # Graph API 업계 업로드 동향
 │   └── sanitize-check.sh        # push 전 게이트
 │
 ├── templates/
@@ -70,13 +79,20 @@ claude-code-blog-builder/
 │   │   ├── blog-research.md
 │   │   ├── blog-quality.md
 │   │   ├── blog-publish-ready.md
-│   │   └── blog-preview.md
+│   │   ├── blog-preview.md
+│   │   ├── insta-setup.md       # /insta-setup
+│   │   ├── insta-new.md         # /insta-new
+│   │   ├── insta-calendar.md
+│   │   ├── insta-trends.md
+│   │   ├── insta-dm.md
+│   │   └── insta-preview.md
 │   └── agents/
 │       ├── setup-interviewer.md
 │       ├── blog-researcher.md
 │       ├── blog-writer.md
 │       ├── blog-quality-reviewer.md
-│       └── medical-law-checker.md
+│       ├── medical-law-checker.md
+│       └── insta-writer.md
 │
 ├── keyword-bank/                # 카테고리별 시드 키워드
 │   ├── README.md
@@ -91,6 +107,7 @@ claude-code-blog-builder/
 └── docs/
     ├── how-it-works.md
     ├── setup-guide.md
+    ├── instagram-guide.md
     └── troubleshooting.md
 ```
 
@@ -244,6 +261,28 @@ output/2026-04-08_my-keyword/
 
 ---
 
+## 인스타그램 수주 파이프라인
+
+목표는 팔로워가 아니라 **DM 문의 → 견적 → 수주**. 전략은 `knowledge/instagram/playbook.md`, 사용법은 `docs/instagram-guide.md`.
+
+```
+/insta-setup             프로필·문의 동선·포트폴리오 (brand-facts.md는 /setup과 공유)
+/insta-trends            (선택) 업계 해시태그·경쟁 계정 동향 — 공식 Graph API
+/insta-calendar          4주 게시 계획 (퍼널 믹스)
+/insta-new "주제" --type portfolio|tip|process|price|review|faq|offer
+/insta-dm "받은 메시지"    DM 답장 초안
+/insta-preview <폴더>     업로드 어시스턴트
+```
+
+철칙:
+- 수치·사례·후기는 `brand-facts.md` / `knowledge/instagram/portfolio.md`에 있는 것만
+- 작업물·결과·후기는 실제 이미지(`source: "real"`)만 — AI로 가짜 작업물을 만들지 않음
+- CTA는 `profile.md`의 DM 키워드 하나로 통일, 해시태그 ≤ 5개, 캡션 URL 금지
+- `output/instagram/<폴더>/slides.json`·`caption.md` 저장 시 훅이 `insta-check.js` 자동 실행
+- 자동 게시·자동 DM·비공식 스크래핑 없음 — 사람이 앱에서 직접 업로드
+
+---
+
 ## 환경 설정
 
 `.env` 파일 (`.env.example` 참조):
@@ -262,6 +301,10 @@ BRAND_NAME=YOUR BRAND
 BRAND_BG_COLOR=#F7F6F2
 BRAND_FG_COLOR=#1A1A1A
 BRAND_ACCENT=#D97A3A
+
+# 인스타 동향 수집 (선택 — /insta-trends)
+IG_USER_ID=your_ig_business_account_id
+IG_ACCESS_TOKEN=your_ig_access_token
 ```
 
 별도 `npm install` 불필요. Node 20+ 내장 fetch만 사용.

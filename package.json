@@ -13,6 +13,10 @@
     "duplicate": "node scripts/duplicate-check.js",
     "preview": "node scripts/preview.js",
     "setup-tone": "node scripts/setup-tone-fetch.js",
+    "insta-check": "node scripts/insta-check.js",
+    "insta-images": "node scripts/insta-images.js",
+    "insta-preview": "node scripts/insta-preview.js",
+    "insta-trends": "node scripts/insta-trends.js",
     "sanitize-check": "bash scripts/sanitize-check.sh"
   }
 }
