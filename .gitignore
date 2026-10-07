@@ -34,3 +34,6 @@ Thumbs.db
 .vscode/
 .idea/
 *.swp
+
+# 브랜드 로고 원본 (회사 자산)
+knowledge/brand-assets/
